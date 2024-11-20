@@ -38,8 +38,7 @@ class LocalPagesManager:
         """Lista todas las páginas disponibles (inorden)"""
         print("\nPáginas HTML disponibles:")
         for host, info in sorted(self.hosts.items()):
-            if '/' in host:  # Solo mostrar dominios con ruta
-                print(f"- {host} ({info['ruta']})")
+            print(f"- {host} ({info['ruta']})")
 
     def visit_page(self, url_or_ip):
         """Visita una página por URL o IP"""

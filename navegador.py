@@ -77,9 +77,9 @@ class WebBrowser:
             self.favorites.show_favorites()
 
         # Módulo: Páginas Locales
-        elif cmd == "listar_paginas":
+        elif cmd == "listar_paginas2":
             self.local_pages.list_pages()
-        elif cmd == "ir" and args:
+        elif cmd == "ir2" and args:
             self.local_pages.visit_page(args[0])
 
         # Módulo: Historial de Búsqueda
@@ -147,7 +147,7 @@ Comandos disponibles:
    - mostrar_favoritos: Muestra todos los favoritos
 
 6. Páginas Locales:
-   - listar_paginas: Muestra todas las páginas disponibles
+   - listar_paginas2: Muestra todas las páginas disponibles
    - ir <url>: Visita una página local
 
 7. Historial de Búsqueda:

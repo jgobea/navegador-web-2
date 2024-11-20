@@ -84,10 +84,73 @@ class AVLFileSystem:
             print(nodo.nombre)
             self.in_order(nodo.derecha)
 
-# Ejemplo de uso
-avl_fs = AVLFileSystem()
-avl_fs.insertar_archivo("archivo1.txt", "Este es el contenido del archivo 1")
-avl_fs.insertar_archivo("archivo2.txt", "Este es el contenido del archivo 2")
-avl_fs.insertar_archivo("archivo3.txt", "Este es el contenido del archivo 3")
+    def postorden(self, nodo):
+        """Recorrido en postorden del árbol"""
+        if nodo:
+            self.postorden(nodo.izquierda)
+            self.postorden(nodo.derecha)
+            print(f"URL: {nodo.nombre}, Contenido: {nodo.contenido}")
 
-avl_fs.in_order(avl_fs.raiz)
+    def mostrar_postorden(self):
+        """Método público para iniciar el recorrido postorden desde la raíz"""
+        self.postorden(self.raiz)
+
+    def eliminar(self, nombre):
+        """Elimina un archivo del árbol AVL"""
+        self.raiz = self._eliminar(self.raiz, nombre)
+
+    def _eliminar(self, nodo, nombre):
+        if not nodo:
+            return nodo
+
+        if nombre < nodo.nombre:
+            nodo.izquierda = self._eliminar(nodo.izquierda, nombre)
+        elif nombre > nodo.nombre:
+            nodo.derecha = self._eliminar(nodo.derecha, nombre)
+        else:
+            # Nodo encontrado
+            if nodo.izquierda is None:
+                return nodo.derecha
+            elif nodo.derecha is None:
+                return nodo.izquierda
+            else:
+                # Nodo con dos hijos: obtener el sucesor (mínimo en el subárbol derecho)
+                temp = self._encontrar_minimo(nodo.derecha)
+                nodo.nombre = temp.nombre
+                nodo.contenido = temp.contenido
+                nodo.derecha = self._eliminar(nodo.derecha, temp.nombre)
+
+        nodo.altura = 1 + max(self.obtener_altura(nodo.izquierda), self.obtener_altura(nodo.derecha))
+        balance = self.obtener_balance(nodo)
+
+        # Rotaciones para balancear el árbol
+        if balance > 1 and self.obtener_balance(nodo.izquierda) >= 0:
+            return self.rotar_derecha(nodo)
+        if balance > 1 and self.obtener_balance(nodo.izquierda) < 0:
+            nodo.izquierda = self.rotar_izquierda(nodo.izquierda)
+            return self.rotar_derecha(nodo)
+        if balance < -1 and self.obtener_balance(nodo.derecha) <= 0:
+            return self.rotar_izquierda(nodo)
+        if balance < -1 and self.obtener_balance(nodo.derecha) > 0:
+            nodo.derecha = self.rotar_derecha(nodo.derecha)
+            return self.rotar_izquierda(nodo)
+
+        return nodo
+
+    def _encontrar_minimo(self, nodo):
+        """Encuentra el nodo con el valor mínimo en el árbol"""
+        if nodo.izquierda is None:
+            return nodo
+        return self._encontrar_minimo(nodo.izquierda)
+
+    def consultar(self, nombre):
+        """Consulta un archivo en el árbol AVL"""
+        return self._consultar(self.raiz, nombre)
+
+    def _consultar(self, nodo, nombre):
+        if nodo is None or nodo.nombre == nombre:
+            return nodo
+        if nombre < nodo.nombre:
+            return self._consultar(nodo.izquierda, nombre)
+        return self._consultar(nodo.derecha, nombre)
+

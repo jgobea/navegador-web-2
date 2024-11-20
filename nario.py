@@ -74,22 +74,3 @@ class FileSystem:
                     return None
         return directorio_actual
 
-
-# Ejemplo de uso
-fs = FileSystem()
-
-# Crear directorios
-fs.crear_directorio("/", "Documentos")
-fs.crear_directorio("/Documentos", "Proyectos")
-fs.crear_directorio("/", "Fotos")
-fs.crear_directorio("/", "Música")
-
-# Recorridos
-print("Recorrido en preorden:")
-fs.raiz.recorrido_preorden()
-
-print("\nRecorrido en inorden:")
-fs.raiz.recorrido_inorden()
-
-print("\nRecorrido en postorden:")
-fs.raiz.recorrido_postorden()

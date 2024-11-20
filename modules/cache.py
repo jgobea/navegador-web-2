@@ -20,7 +20,7 @@ class CacheManager:
         if content:
             print(f"Cache hit para: {url}")
             print(f"Último acceso: {timestamp}")
-            return content
+            print(content)
         print(f"Cache miss para: {url}")
         return None
 

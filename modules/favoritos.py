@@ -19,11 +19,15 @@ class FavoritesManager:
     def remove_favorite(self, url):
         """Elimina un sitio de favoritos"""
         try:
-            self.avl_tree.eliminar(url)
-            print(f"Favorito eliminado: {url}")
-            return True
-        except Exception:
-            print(f"No se pudo eliminar el favorito: {url}")
+            if self.avl_tree.eliminar(url):
+                self._update_favorites_csv()  # Actualiza el CSV después de eliminar
+                print(f"Favorito eliminado: {url}")
+                return True
+            else:
+                print(f"No se pudo eliminar el favorito: {url}")
+                return False
+        except Exception as e:
+            print(f"Error al eliminar el favorito: {e}")
             return False
 
     def search_favorite(self, url):
@@ -38,7 +42,7 @@ class FavoritesManager:
     def show_favorites(self):
         """Muestra todos los favoritos (postorden)"""
         print("\nLista de favoritos:")
-        self.avl_tree.postorden()
+        self.avl_tree.mostrar_postorden()
 
     def _save_favorite(self, url, title):
         """Guarda el favorito en el archivo CSV"""
@@ -59,4 +63,20 @@ class FavoritesManager:
                         self.avl_tree.insertar_archivo(row[0], row[1])
         except FileNotFoundError:
             # El archivo se creará cuando se agregue el primer favorito
-            pass 
+            pass
+
+    def _update_favorites_csv(self):
+        """Actualiza el archivo CSV con los favoritos actuales"""
+        try:
+            with open('data/favoritos.csv', 'w', newline='') as file:
+                writer = csv.writer(file)
+                self._write_favorites_to_csv(writer, self.avl_tree.raiz)
+        except Exception as e:
+            print(f"Error al actualizar el archivo de favoritos: {e}")
+
+    def _write_favorites_to_csv(self, writer, nodo):
+        """Escribe los favoritos en el archivo CSV desde el árbol"""
+        if nodo:
+            self._write_favorites_to_csv(writer, nodo.izquierda)
+            writer.writerow([nodo.nombre, nodo.contenido, datetime.now().strftime("%Y-%m-%d %H:%M:%S")])
+            self._write_favorites_to_csv(writer, nodo.derecha)
